@@ -41,7 +41,7 @@ class NewsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         fragmentNewsBinding = FragmentNewsBinding.bind(view)
         viewModel = (activity as MainActivity).viewModel
-        newsAdapter= (activity as MainActivity).newsAdapter
+        newsAdapter = (activity as MainActivity).newsAdapter
         newsAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putSerializable("selected_article", it)
@@ -114,7 +114,8 @@ class NewsFragment : Fragment() {
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            val layoutManager = fragmentNewsBinding.newsRecyclerView.layoutManager as LinearLayoutManager
+            val layoutManager =
+                fragmentNewsBinding.newsRecyclerView.layoutManager as LinearLayoutManager
             val sizeOfTheCurrentList = layoutManager.itemCount
             val visibleItems = layoutManager.childCount
             val topPosition = layoutManager.findFirstVisibleItemPosition()
@@ -140,12 +141,14 @@ class NewsFragment : Fragment() {
             }
 
             override fun onQueryTextChange(p0: String?): Boolean {
-                MainScope().launch {
-                    delay(2000)
-                    viewModel.searchNews("us", p0.toString(), page)
-                    viewSearchedNews()
+                if (p0 != "") {
+                    MainScope().launch {
+                        delay(2000)
+                        viewModel.searchNews("us", p0.toString(), page)
+                        viewSearchedNews()
+                    }
                 }
-                    return false
+                return false
             }
         })
         fragmentNewsBinding.searchview.setOnCloseListener {
@@ -154,6 +157,7 @@ class NewsFragment : Fragment() {
             false
         }
     }
+
     fun viewSearchedNews() {
         viewModel.searchedNews.observe(viewLifecycleOwner) { response ->
             when (response) {

@@ -2,6 +2,7 @@ package com.kyonggi.newsapiclient.data.repository
 
 import com.kyonggi.newsapiclient.data.model.APIResponse
 import com.kyonggi.newsapiclient.data.model.Article
+import com.kyonggi.newsapiclient.data.repository.dataSource.NewsLocalDataSource
 import com.kyonggi.newsapiclient.data.repository.dataSource.NewsRemoteDataSource
 import com.kyonggi.newsapiclient.data.util.Resource
 import com.kyonggi.newsapiclient.domain.repository.NewsRepository
@@ -9,7 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 class NewsRepositoryImpl(
-    private val newsRemoteDataSource: NewsRemoteDataSource
+    private val newsRemoteDataSource: NewsRemoteDataSource,
+    private val newsLocalDataSource: NewsLocalDataSource
 ) : NewsRepository {
     override suspend fun getNewsHeadlines(country: String, page: Int): Resource<APIResponse> {
         return responseToResource(newsRemoteDataSource.getTopHeadlines(country, page))
@@ -24,7 +26,7 @@ class NewsRepositoryImpl(
     }
 
     override suspend fun saveNews(article: Article) {
-        TODO("Not yet implemented")
+        newsLocalDataSource.saveArticleToDB(article)
     }
 
     override suspend fun deleteNews(article: Article) {
@@ -32,7 +34,7 @@ class NewsRepositoryImpl(
     }
 
     override fun getSavedNews(): Flow<List<Article>> {
-        TODO("Not yet implemented")
+        return newsLocalDataSource.getSavedArticles()
     }
 
 

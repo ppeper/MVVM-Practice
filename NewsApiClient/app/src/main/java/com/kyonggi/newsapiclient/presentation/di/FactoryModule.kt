@@ -2,7 +2,9 @@ package com.kyonggi.newsapiclient.presentation.di
 
 import android.app.Application
 import com.kyonggi.newsapiclient.domain.usecase.GetNewsHeadlinesUseCase
+import com.kyonggi.newsapiclient.domain.usecase.GetSavedNewsUseCase
 import com.kyonggi.newsapiclient.domain.usecase.GetSearchedNewsUseCase
+import com.kyonggi.newsapiclient.domain.usecase.SaveNewsUseCase
 import com.kyonggi.newsapiclient.presentation.viewmodel.NewsViewModelFactory
 import dagger.Module
 import dagger.Provides
@@ -19,12 +21,16 @@ class FactoryModule {
     fun provideNewsViewModelFactory(
         application: Application,
         getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase,
-        getSearchedNewsUseCase: GetSearchedNewsUseCase
+        getSearchedNewsUseCase: GetSearchedNewsUseCase,
+        saveNewsUseCase: SaveNewsUseCase,
+        getSavedNewsUseCase: GetSavedNewsUseCase
     ): NewsViewModelFactory {
         return NewsViewModelFactory(
             application,
             getNewsHeadlinesUseCase,
-            getSearchedNewsUseCase
+            getSearchedNewsUseCase,
+            saveNewsUseCase,
+            getSavedNewsUseCase
         )
     }
 }

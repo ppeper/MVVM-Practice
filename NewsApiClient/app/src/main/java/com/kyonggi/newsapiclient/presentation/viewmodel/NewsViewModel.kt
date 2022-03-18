@@ -11,18 +11,23 @@ import androidx.lifecycle.viewModelScope
 import com.kyonggi.newsapiclient.data.model.APIResponse
 import com.kyonggi.newsapiclient.data.util.Resource
 import com.kyonggi.newsapiclient.domain.usecase.GetNewsHeadlinesUseCase
+import com.kyonggi.newsapiclient.domain.usecase.GetSearchedNewsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class NewsViewModel(
     private val app: Application,
-    val getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase
-): AndroidViewModel(app) {
+    private val getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase,
+    private val getSearchedNewsUseCase: GetSearchedNewsUseCase
+) : AndroidViewModel(app) {
     val newsHeadLines: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
 
-    // 네트워크를 위해 백그라인드에서 실행 + 코루틴 사용용
-   fun getNewsHeadLines(country: String, page: Int) = viewModelScope.launch(Dispatchers.IO) {
+    // Search News
+    val searchedNews: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
+
+    // 네트워크를 위해 백그라운드에서 실행 + 코루틴 사용
+    fun getNewsHeadLines(country: String, page: Int) = viewModelScope.launch(Dispatchers.IO) {
         newsHeadLines.postValue(Resource.Loading())
         try {
             if (isNetworkAvailable(app)) {
@@ -35,12 +40,35 @@ class NewsViewModel(
             newsHeadLines.postValue(Resource.Error(e.message.toString()))
         }
     }
+    // 네트워크를 위해 백그라운드에서 실행 + 코루틴 사용 (검색기능)
 
-    private fun isNetworkAvailable(context: Context?):Boolean{
+    fun searchNews(
+        country: String,
+        searchQuery: String,
+        page: Int
+    ) = viewModelScope.launch {
+        searchedNews.postValue(Resource.Loading())
+        try {
+            if (isNetworkAvailable(app)) {
+                val response = getSearchedNewsUseCase.execute(
+                    country, searchQuery, page
+                )
+                searchedNews.postValue(response)
+            } else {
+                searchedNews.postValue(Resource.Error("인터넷 연결이 되지 않습니다"))
+            }
+        } catch (e: Exception) {
+            newsHeadLines.postValue(Resource.Error(e.message.toString()))
+        }
+    }
+
+    private fun isNetworkAvailable(context: Context?): Boolean {
         if (context == null) return false
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
             if (capabilities != null) {
                 when {
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {

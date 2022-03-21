@@ -3,17 +3,15 @@ package com.kyonggi.newsapiclient.presentation.viewmodel
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.kyonggi.newsapiclient.domain.usecase.GetNewsHeadlinesUseCase
-import com.kyonggi.newsapiclient.domain.usecase.GetSavedNewsUseCase
-import com.kyonggi.newsapiclient.domain.usecase.GetSearchedNewsUseCase
-import com.kyonggi.newsapiclient.domain.usecase.SaveNewsUseCase
+import com.kyonggi.newsapiclient.domain.usecase.*
 
 class NewsViewModelFactory(
     private val app: Application,
     private val getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase,
     private val getSearchedNewsUseCase: GetSearchedNewsUseCase,
     private val saveNewsUseCase: SaveNewsUseCase,
-    private val getSavedNewsUseCase: GetSavedNewsUseCase
+    private val getSavedNewsUseCase: GetSavedNewsUseCase,
+    private val deletedSavedNewsUseCase: DeletedSavedNewsUseCase
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return NewsViewModel(
@@ -21,7 +19,8 @@ class NewsViewModelFactory(
             getNewsHeadlinesUseCase,
             getSearchedNewsUseCase,
             saveNewsUseCase,
-            getSavedNewsUseCase
+            getSavedNewsUseCase,
+            deletedSavedNewsUseCase
         ) as T
     }
 }

@@ -1,10 +1,7 @@
 package com.kyonggi.newsapiclient.presentation.di
 
 import com.kyonggi.newsapiclient.domain.repository.NewsRepository
-import com.kyonggi.newsapiclient.domain.usecase.GetNewsHeadlinesUseCase
-import com.kyonggi.newsapiclient.domain.usecase.GetSavedNewsUseCase
-import com.kyonggi.newsapiclient.domain.usecase.GetSearchedNewsUseCase
-import com.kyonggi.newsapiclient.domain.usecase.SaveNewsUseCase
+import com.kyonggi.newsapiclient.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,5 +42,13 @@ class UseCaseModule {
         newsRepository: NewsRepository
     ): GetSavedNewsUseCase {
         return GetSavedNewsUseCase(newsRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDeleteSavedNewsUseCase(
+        newsRepository: NewsRepository
+    ): DeletedSavedNewsUseCase {
+        return DeletedSavedNewsUseCase(newsRepository)
     }
 }

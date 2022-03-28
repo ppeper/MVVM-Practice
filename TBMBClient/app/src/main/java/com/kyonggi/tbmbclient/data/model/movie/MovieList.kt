@@ -3,6 +3,6 @@ package com.kyonggi.tbmbclient.data.model.movie
 import com.google.gson.annotations.SerializedName
 
 data class MovieList(
-    @SerializedName("result")
+    @SerializedName("results")
     val movies: List<Movie>
 )

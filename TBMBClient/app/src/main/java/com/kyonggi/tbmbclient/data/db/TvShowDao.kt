@@ -9,11 +9,11 @@ import com.kyonggi.tbmbclient.data.model.tvshow.TvShow
 @Dao
 interface TvShowDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveTvShows(movies: List<TvShow>)
+    suspend fun saveTvShows(tvShows: List<TvShow>)
 
-    @Query("DELETE FROM popular_movies")
+    @Query("DELETE FROM popular_tvShows")
     suspend fun deleteAllTvShows()
 
-    @Query("SELECT * FROM popular_movies")
+    @Query("SELECT * FROM popular_tvShows")
     suspend fun getTvShows(): List<TvShow>
 }
